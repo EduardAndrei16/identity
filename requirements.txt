@@ -34,5 +34,6 @@ six==1.17.0
 sqlparse==0.5.3
 typing_extensions==4.12.2
 urllib3==2.3.0
+whitenoise==6.9.0
 xmltodict==0.14.2
 yarl==1.18.3
