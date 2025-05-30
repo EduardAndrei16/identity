@@ -1,0 +1,350 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+<form>
+  <h3>Please fill in the details to onboard the application</h3>
+
+  <div class="form-row align-items-center">
+    <div class="col-auto my-1">
+      <label class="mr-sm-2" for="appTypeSelect">Choose the Application Type <span class="text-danger">*</span></label>
+      <select class="custom-select mr-sm-2" id="appTypeSelect" onchange="toggleAppFields()" required>
+        <option selected value="">Application Type</option>
+        <option value="SAML">SAML</option>
+        <option value="OIDC">OIDC</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- SAML specific fields - initially hidden -->
+  <div id="samlFields" style="display: none;">
+    <div class="form-group row mt-3">
+      <label class="col-sm-2 col-form-label">SSO URL <span class="text-danger">*</span></label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" placeholder="SSO URL" required>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Entity ID <span class="text-danger">*</span></label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" placeholder="Entity ID" required>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Default Relay State <small class="text-muted">(Optional)</small></label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" placeholder="Default Relay State">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Username Template <small class="text-muted">(Optional, defaults to username)</small></label>
+      <div class="col-sm-10">
+        <select class="custom-select">
+          <option selected value="username">username</option>
+          <option value="email">email</option>
+          <option value="employeeID">employeeID</option>
+          <option value="employeeNumber">employeeNumber</option>
+          <option value="sAMAccountName">sAMAccountName</option>
+        </select>
+      </div>
+    </div>
+
+    <p><strong>Profile Attribute Statements</strong> <small class="text-muted">(Optional)</small></p>
+
+    <!-- Attribute field container for SAML -->
+    <div id="saml-attribute-container" class="mb-3"></div>
+
+    <!-- Add Attribute Button for SAML -->
+    <button type="button" class="btn btn-outline-primary mb-4" onclick="addAttributeSet('saml-attribute-container')">Add Attribute</button>
+
+    <!-- New Group Attribute Statements section -->
+    <p><strong>Group Attribute Statements</strong> <small class="text-muted">(Optional)</small></p>
+
+    <!-- Group Attribute field container for SAML -->
+    <div id="saml-group-attribute-container" class="mb-3"></div>
+
+    <!-- Add Group Attribute Button for SAML -->
+    <button type="button" class="btn btn-outline-primary mb-4" onclick="addGroupAttributeSet('saml-group-attribute-container')">Add Group Attribute</button>
+
+    <div class="form-group">
+      <label for="samlPassportPolicies">Passport Policies <span class="text-danger">*</span></label>
+      <textarea class="form-control" id="samlPassportPolicies" rows="3" required></textarea>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-sm-2">Provisioning <small class="text-muted">(Optional)</small></div>
+      <div class="col-sm-10">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="samlProvisioning" onchange="toggleProvisioningFields()">
+          <label class="form-check-label" for="samlProvisioning">
+            Enable provisioning
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1Password Vault field - initially hidden -->
+    <div id="samlProvisioningFields" class="form-group row" style="display: none;">
+      <label class="col-sm-2 col-form-label">1Password Vault with API credentials</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="saml1PasswordVault" placeholder="1Password Vault link">
+      </div>
+    </div>
+  </div>
+
+  <!-- OIDC specific fields - initially hidden -->
+  <div id="oidcFields" style="display: none;">
+    <div class="form-group row mt-3">
+      <label class="col-sm-2 col-form-label">Sign-in URLs <span class="text-danger">*</span></label>
+      <div class="col-sm-10">
+        <!-- URL field container -->
+        <div id="signin-url-container" class="mb-3"></div>
+        
+        <!-- Add URL Button -->
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addUrlField('signin-url-container', 'signin_url[]', 'https://...')">
+          <i class="fas fa-plus"></i> Add Sign-in URL
+        </button>
+        <div class="invalid-feedback" id="signin-url-error" style="display: none;">
+          At least one Sign-in URL is required
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Sign-out URLs <small class="text-muted">(Optional)</small></label>
+      <div class="col-sm-10">
+        <!-- URL field container -->
+        <div id="signout-url-container" class="mb-3"></div>
+        
+        <!-- Add URL Button -->
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addUrlField('signout-url-container', 'signout_url[]', 'https://...')">
+          <i class="fas fa-plus"></i> Add Sign-out URL
+        </button>
+      </div>
+    </div>
+
+    <p><strong>Group Claims</strong></p>
+    
+    <!-- Group Claims container for OIDC -->
+    <div id="group-claims-container" class="mb-3"></div>
+    
+    <!-- Add Group Claim Button -->
+    <button type="button" class="btn btn-outline-primary mb-4" onclick="addGroupClaim()">Add Group Claim</button>
+
+    <div class="form-group">
+      <label for="oidcPassportPolicies">Passport Policies <span class="text-danger">*</span></label>
+      <textarea class="form-control" id="oidcPassportPolicies" rows="3" required></textarea>
+    </div>
+
+  </div>
+
+  <div class="form-group row mt-4">
+    <div class="col-sm-10">
+      <button type="submit" class="btn btn-primary" onclick="validateForm(event)">Submit</button>
+    </div>
+  </div>
+
+</form>
+
+<!-- JavaScript to add dynamic fields -->
+<script>
+  // Add a sign-in URL by default when OIDC is selected
+  function toggleAppFields() {
+    const appType = document.getElementById('appTypeSelect').value;
+    const samlFields = document.getElementById('samlFields');
+    const oidcFields = document.getElementById('oidcFields');
+    
+    // Show/hide fields based on selection
+    if (appType === 'SAML') {
+      samlFields.style.display = 'block';
+      oidcFields.style.display = 'none';
+    } else if (appType === 'OIDC') {
+      samlFields.style.display = 'none';
+      oidcFields.style.display = 'block';
+      
+      // Add a default sign-in URL if none exists
+      const signinContainer = document.getElementById('signin-url-container');
+      if (signinContainer.children.length === 0) {
+        addUrlField('signin-url-container', 'signin_url[]', 'https://...');
+      }
+    } else {
+      // No selection or default selection
+      samlFields.style.display = 'none';
+      oidcFields.style.display = 'none';
+    }
+  }
+
+  function toggleProvisioningFields() {
+    const provisioningEnabled = document.getElementById('samlProvisioning').checked;
+    const provisioningFields = document.getElementById('samlProvisioningFields');
+    
+    if (provisioningEnabled) {
+      provisioningFields.style.display = 'flex';
+      document.getElementById('saml1PasswordVault').required = true;
+    } else {
+      provisioningFields.style.display = 'none';
+      document.getElementById('saml1PasswordVault').required = false;
+    }
+  }
+
+  function addUrlField(containerId, fieldName, placeholder) {
+    const container = document.getElementById(containerId);
+
+    const row = document.createElement('div');
+    row.className = 'input-group mb-2';
+
+    row.innerHTML = `
+      <input type="text" name="${fieldName}" class="form-control" placeholder="${placeholder}" ${containerId === 'signin-url-container' ? 'required' : ''}>
+      <div class="input-group-append">
+        <button type="button" class="btn btn-outline-danger" onclick="removeField(this, '${containerId}')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    `;
+
+    container.appendChild(row);
+    
+    // Hide error message if it was showing
+    if (containerId === 'signin-url-container') {
+      document.getElementById('signin-url-error').style.display = 'none';
+    }
+  }
+
+  function addGroupClaim() {
+    const container = document.getElementById('group-claims-container');
+
+    const row = document.createElement('div');
+    row.className = 'row mb-3';
+
+    row.innerHTML = `
+      <div class="col">
+        <input type="text" name="group_claim_name[]" class="form-control" placeholder="Name">
+      </div>
+      <div class="col">
+        <select name="group_claim_condition[]" class="custom-select">
+          <option selected>Select Filter</option>
+          <option value="starts_with">Starts with</option>
+          <option value="equals">Equals</option>
+          <option value="contains">Contains</option>
+          <option value="matches_regex">Matches regex</option>
+        </select>
+      </div>
+      <div class="col">
+        <input type="text" name="group_claim_value[]" class="form-control" placeholder="Value">
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-outline-danger" onclick="removeField(this)">
+          <i class="fas fa-times"></i> Remove
+        </button>
+      </div>
+    `;
+
+    container.appendChild(row);
+  }
+
+  function addAttributeSet(containerId) {
+    const container = document.getElementById(containerId);
+
+    const row = document.createElement('div');
+    row.className = 'row mb-3';
+
+    row.innerHTML = `
+      <div class="col">
+        <input type="text" name="attribute_name[]" class="form-control" placeholder="Attribute Name">
+      </div>
+      <div class="col">
+        <select name="attribute_type[]" class="custom-select">
+          <option selected>Unspecified</option>
+          <option value="uri">URI Reference</option>
+          <option value="basic">Basic</option>
+        </select>
+      </div>
+      <div class="col">
+        <input type="text" name="attribute_value[]" class="form-control" placeholder="Attribute Value">
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-outline-danger" onclick="removeField(this)">
+          <i class="fas fa-times"></i> Remove
+        </button>
+      </div>
+    `;
+
+    container.appendChild(row);
+  }
+
+  // New function for adding Group Attribute Sets
+  function addGroupAttributeSet(containerId) {
+    const container = document.getElementById(containerId);
+
+    const row = document.createElement('div');
+    row.className = 'row mb-3';
+
+    row.innerHTML = `
+      <div class="col">
+        <input type="text" name="group_attribute_name[]" class="form-control" placeholder="Name">
+      </div>
+      <div class="col">
+        <select name="group_attribute_type[]" class="custom-select">
+          <option selected>Unspecified</option>
+          <option value="uri">URI Reference</option>
+          <option value="basic">Basic</option>
+        </select>
+      </div>
+      <div class="col">
+        <select name="group_attribute_filter[]" class="custom-select">
+          <option selected>Select Filter</option>
+          <option value="starts_with">Starts with</option>
+          <option value="equals">Equals</option>
+          <option value="contains">Contains</option>
+          <option value="matches_regex">Matches regex</option>
+        </select>
+      </div>
+      <div class="col">
+        <input type="text" name="group_attribute_value[]" class="form-control" placeholder="Value">
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-outline-danger" onclick="removeField(this)">
+          <i class="fas fa-times"></i> Remove
+        </button>
+      </div>
+    `;
+
+    container.appendChild(row);
+  }
+
+  function removeField(button, containerId) {
+    // Get the parent element and remove it
+    const parentElement = button.closest('.row, .input-group');
+    parentElement.remove();
+    
+    // Show error message if removing the last sign-in URL
+    if (containerId === 'signin-url-container') {
+      const container = document.getElementById(containerId);
+      if (container.children.length === 0) {
+        document.getElementById('signin-url-error').style.display = 'block';
+      }
+    }
+  }
+  
+  function validateForm(event) {
+    let isValid = true;
+    const appType = document.getElementById('appTypeSelect').value;
+    
+    if (appType === 'OIDC') {
+      // Check if at least one sign-in URL exists
+      const signinContainer = document.getElementById('signin-url-container');
+      if (signinContainer.children.length === 0) {
+        document.getElementById('signin-url-error').style.display = 'block';
+        isValid = false;
+      }
+    }
+    
+    if (!isValid) {
+      event.preventDefault();
+    }
+  }
+</script>
+{% endblock %}
