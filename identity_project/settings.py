@@ -40,7 +40,7 @@ OKTA_AUTH = {
     "CLIENT_ID": "0oanpf8ya7UtbJLwM417",
     "CLIENT_SECRET": "H-4noxdoNh3LoJXDFVVZH93LbpaG1q91lPr2slZyQemgR3Zgg7ABpEzoLuyifEVn",
     "SCOPES": "openid profile email offline_access",
-    "REDIRECT_URI": "https://identity-me30.onrender.com/oidc/callback/"
+    "REDIRECT_URI": "https://identity-me30.onrender.com/oidc/callback/",
     "LOGIN_REDIRECT_URL": "/",
     "CACHE_PREFIX": "okta",
     "CACHE_ALIAS": "default",
