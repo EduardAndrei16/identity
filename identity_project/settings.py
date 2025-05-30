@@ -40,7 +40,7 @@ OKTA_AUTH = {
     "CLIENT_ID": "0oanpf8ya7UtbJLwM417",
     "CLIENT_SECRET": "H-4noxdoNh3LoJXDFVVZH93LbpaG1q91lPr2slZyQemgR3Zgg7ABpEzoLuyifEVn",
     "SCOPES": "openid profile email offline_access",
-    "REDIRECT_URI": "https://identity-me30.onrender.com/oidc/callback/",
+    "REDIRECT_URI": "https://identity-me30.onrender.com/oauth2/callback/",
     "LOGIN_REDIRECT_URL": "/",
     "CACHE_PREFIX": "okta",
     "CACHE_ALIAS": "default",
@@ -54,7 +54,7 @@ OKTA_BASE_URL = 'https://booking.okta.com'
 OKTA_ISSUER = 'https://booking.okta.com/oauth2/default'
 OKTA_CLIENT_ID = '0oanpf8ya7UtbJLwM417'
 OKTA_CLIENT_SECRET = 'H-4noxdoNh3LoJXDFVVZH93LbpaG1q91lPr2slZyQemgR3Zgg7ABpEzoLuyifEVn'
-OKTA_REDIRECT_URI = 'https://identity-me30.onrender.com/oidc/callback/'
+OKTA_REDIRECT_URI = 'https://identity-me30.onrender.com/oauth2/callback/'
 
 # Login/logout URLs
 LOGIN_URL = '/accounts/login/'
