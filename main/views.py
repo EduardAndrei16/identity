@@ -4,14 +4,13 @@ from django.conf import settings
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
-from okta_oauth2.decorators import okta_login_required
+from django.contrib.auth.decorators import login_required
 import requests
 import json
 import base64
 from django.views.decorators.csrf import csrf_exempt
 import urllib.parse
 import secrets
-from django.contrib.auth.decorators import login_required
 
 def home(request):
     """
@@ -19,13 +18,33 @@ def home(request):
     """
     return render(request, 'main/home.html')
 
-
-@login_required(login_url='/accounts/login/')
+@login_required
 def app_onboarding(request):
     """
     App onboarding view that requires authentication
     """
     return render(request, 'main/app_onboarding.html')
+
+@login_required
+def auth_clients(request):
+    """
+    Auth Clients view that requires authentication
+    """
+    return render(request, 'main/auth_clients.html')
+
+@login_required
+def audits_reports(request):
+    """
+    Audits and Reports view that requires authentication
+    """
+    return render(request, 'main/audits_reports.html')
+
+@login_required
+def app_update(request):
+    """
+    App Update
+    """
+    return render(request, 'main/app_update.html')
 
 def login_view(request):
     """
@@ -47,6 +66,7 @@ def login_view(request):
     
     authorize_url = f"{settings.OKTA_ISSUER}/v1/authorize?{urllib.parse.urlencode(params)}"
     return redirect(authorize_url)
+
 
 def logout_view(request):
     """
@@ -145,7 +165,8 @@ def oauth2_callback(request):
                 username=username,
                 email=email,
                 first_name=userinfo.get('given_name', ''),
-                last_name=userinfo.get('family_name', '')
+                last_name=userinfo.get('family_name', ''),
+                role=userinfo.get('role', '')
             )
             print(f"Created new user: {user.username}")
         

@@ -3,10 +3,8 @@
 {% block title %}Home - Identity Project{% endblock %}
 
 {% block content %}
-<div class="text-center mt-5 pt-5">
+<div class="text-center mt-0 pt-2">
   <h1 class="display-4">Welcome to Identity Services</h1>
-    
-
   <p class="lead mt-3">
     This platform is your one-stop hub for managing and interacting with all of our identity systems.
   </p>
@@ -14,19 +12,142 @@
     From authentication and authorization to reports tailored for your needs, you will find many of our services right here.
   </p>
     
+  {% if user.is_authenticated %}
+      
+      <!-- FAQ Section - Only visible to authenticated users -->
+      <div class="mt-5 pt-5">
+        <h2 class="mb-4">Frequently Asked Questions</h2>
+        
+        <div class="accordion" id="faqAccordion">
+          <!-- FAQ Item 1 -->
+          <div class="card">
+            <div class="card-header" id="headingOne">
+              <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                  How do I onboard a new application?
+                </button>
+              </h2>
+            </div>
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#faqAccordion">
+              <div class="card-body">
+                To onboard a new application, navigate to the <a href="{% url 'app_onboarding' %}">Application Onboarding</a> page and fill out the required information. You'll need to select the application type (SAML or OIDC) and provide the necessary configuration details.
+              </div>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 2 -->
+          <div class="card">
+            <div class="card-header" id="headingTwo">
+              <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  What's the difference between SAML and OIDC?
+                </button>
+              </h2>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#faqAccordion">
+              <div class="card-body">
+                <p><strong>SAML (Security Assertion Markup Language)</strong> is an XML-based protocol primarily used for web-based authentication and authorization. It's commonly used for enterprise SSO scenarios.</p>
+                <p><strong>OIDC (OpenID Connect)</strong> is a modern authentication protocol built on top of OAuth 2.0. It's more lightweight than SAML and is often preferred for mobile applications and modern web applications.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 3 -->
+          <div class="card">
+            <div class="card-header" id="headingThree">
+              <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  How do I update an existing application?
+                </button>
+              </h2>
+            </div>
+            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#faqAccordion">
+              <div class="card-body">
+                Application updates are coming soon! In the meantime, please reach out to the identity team on the <strong>#okta</strong> Slack channel for assistance with updating existing applications.
+              </div>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 4 -->
+          <div class="card">
+            <div class="card-header" id="headingFour">
+              <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                  What are Passport Policies?
+                </button>
+              </h2>
+            </div>
+            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#faqAccordion">
+              <div class="card-body">
+                Passport Policies define who can access your application. They are rules that determine which users or groups are allowed to authenticate to your application. When configuring an application, you'll need to specify these policies to control access.
+              </div>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 5 -->
+          <div class="card">
+            <div class="card-header" id="headingFive">
+              <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                  How do I get help with identity issues?
+                </button>
+              </h2>
+            </div>
+            <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#faqAccordion">
+              <div class="card-body">
+                For any questions or issues related to identity services, please reach out on the <strong>#okta</strong> Slack channel. Our team is available to assist with application onboarding, configuration, and troubleshooting.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header" id="headingSix">
+              <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                  What are Auth Clients?
+                </button>
+              </h2>
+            </div>
+            <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#faqAccordion">
+              <div class="card-body">
+                Auth Clients are OAuth 2.0 / OpenID Connect client applications that can request authentication and authorization from our identity provider.
+                Always protect client secrets and never expose them in public code. 
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+  {% else %}
+      <div class="alert alert-info mt-4">
+          <p class="mb-0">You are not logged in. <a href="{% url 'login' %}" class="alert-link">Click here to log in</a>.</p>
+      </div>
+  {% endif %}
+    
+ 
+    
   <div class="alert alert-info mt-4" role="alert">
     Need help? Reach out on the <strong>#okta</strong> Slack channel — we're here to assist!
   </div>
-
-  {% if user.is_authenticated %}
-  <div class="alert alert-success mt-4">
-      <p class="mb-0">You are logged in as <strong>{{ user.username }}</strong></p>
-  </div>
-{% else %}
-  <div class="alert alert-info mt-4">
-      <p class="mb-0">You are not logged in. <a href="{% url 'login' %}" class="alert-link">Click here to log in</a>.</p>
-  </div>
-{% endif %}
-
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{% if user.is_authenticated %}
+<script>
+  // Initialize accordion functionality
+  $(document).ready(function() {
+    // Make sure the accordion headers are clickable
+    $('.accordion .card-header button').on('click', function(e) {
+      e.preventDefault();
+      
+      // Get the target collapse element
+      var target = $(this).data('target');
+      
+      // Toggle the collapse
+      $(target).collapse('toggle');
+    });
+  });
+</script>
+{% endif %}
 {% endblock %}

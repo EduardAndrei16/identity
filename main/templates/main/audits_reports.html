@@ -1,0 +1,415 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Audits & Reports - Identity Project{% endblock %}
+
+{% block content %}
+<div class="mt-2 pt-3">
+  <h1 class="mb-4">Audits & Reports</h1>
+  
+  <div class="alert alert-info">
+    <p>This page provides access to audit logs and reports for identity-related activities.</p>
+  </div>
+  
+  <!-- Tabs for different report types -->
+  <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="app-tab" data-toggle="tab" href="#app" role="tab" aria-controls="app" aria-selected="true">Application Access</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="audits-tab" data-toggle="tab" href="#audits" role="tab" aria-controls="audits" aria-selected="false">Audits</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="custom-tab" data-toggle="tab" href="#custom" role="tab" aria-controls="custom" aria-selected="false">Custom Reports</a>
+    </li>
+  </ul>
+  
+  <div class="tab-content mt-4" id="reportTabsContent">
+    <!-- Application Access Tab -->
+    <div class="tab-pane fade show active" id="app" role="tabpanel" aria-labelledby="app-tab">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Application Access Report</h5>
+          <div>
+            <button class="btn btn-outline-primary btn-sm mr-2">
+              <i class="fas fa-filter"></i> Filter
+            </button>
+            <button class="btn btn-outline-success btn-sm">
+              <i class="fas fa-download"></i> Export
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-group row">
+            <label for="appSelect" class="col-sm-2 col-form-label">Select Application:</label>
+            <div class="col-sm-4">
+              <select class="form-control" id="appSelect">
+                <option value="">All Applications</option>
+                <option value="1">Sales Dashboard</option>
+                <option value="2">HR Portal</option>
+                <option value="3">Finance System</option>
+                <option value="4">Customer Support</option>
+              </select>
+            </div>
+            <label for="dateRange" class="col-sm-2 col-form-label">Date Range:</label>
+            <div class="col-sm-4">
+              <select class="form-control" id="dateRange">
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="7days" selected>Last 7 Days</option>
+                <option value="30days">Last 30 Days</option>
+                <option value="custom">Custom Range</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="table-responsive mt-3">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Date/Time</th>
+                  <th>User</th>
+                  <th>Application</th>
+                  <th>Action</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Example data rows -->
+                <tr>
+                  <td>2023-08-15 10:15:22</td>
+                  <td>john.doe@example.com</td>
+                  <td>Sales Dashboard</td>
+                  <td>Login</td>
+                  <td><span class="badge badge-success">Success</span></td>
+                </tr>
+                <tr>
+                  <td>2023-08-15 09:45:11</td>
+                  <td>jane.smith@example.com</td>
+                  <td>HR Portal</td>
+                  <td>Access Report</td>
+                  <td><span class="badge badge-success">Success</span></td>
+                </tr>
+                <tr>
+                  <td>2023-08-14 16:32:45</td>
+                  <td>admin@example.com</td>
+                  <td>Finance System</td>
+                  <td>Export Data</td>
+                  <td><span class="badge badge-success">Success</span></td>
+                </tr>
+                <tr>
+                  <td>2023-08-14 14:22:18</td>
+                  <td>mark.wilson@example.com</td>
+                  <td>Customer Support</td>
+                  <td>Login</td>
+                  <td><span class="badge badge-danger">Denied</span></td>
+                </tr>
+                <tr>
+                  <td>2023-08-13 11:05:37</td>
+                  <td>sarah.jones@example.com</td>
+                  <td>HR Portal</td>
+                  <td>View Employee</td>
+                  <td><span class="badge badge-success">Success</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <nav aria-label="Application access pagination" class="mt-3">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Audits Tab -->
+    <div class="tab-pane fade" id="audits" role="tabpanel" aria-labelledby="audits-tab">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Identity System Audits</h5>
+        </div>
+        <div class="card-body">
+          <p>Access audit logs from various identity systems.</p>
+          
+          <!-- Nested tabs for different audit sources -->
+          <ul class="nav nav-pills mb-3" id="auditSourceTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link active" id="okta-tab" data-toggle="pill" href="#okta" role="tab" aria-controls="okta" aria-selected="true">
+                <i class="fas fa-shield-alt mr-1"></i> Okta Audits
+              </a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" id="ad-tab" data-toggle="pill" href="#ad" role="tab" aria-controls="ad" aria-selected="false">
+                <i class="fas fa-server mr-1"></i> Active Directory Audits
+              </a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" id="entra-tab" data-toggle="pill" href="#entra" role="tab" aria-controls="entra" aria-selected="false">
+                <i class="fas fa-cloud mr-1"></i> Entra ID Audits
+              </a>
+            </li>
+          </ul>
+          
+          <div class="tab-content" id="auditSourceTabContent">
+            <!-- Okta Audits -->
+            <div class="tab-pane fade show active" id="okta" role="tabpanel" aria-labelledby="okta-tab">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0">Okta System Audit Logs</h6>
+                  <div>
+                    <button class="btn btn-outline-primary btn-sm mr-2">
+                      <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <button class="btn btn-outline-success btn-sm">
+                      <i class="fas fa-download"></i> Export
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="form-group row">
+                    <label for="oktaEventType" class="col-sm-2 col-form-label">Event Type:</label>
+                    <div class="col-sm-4">
+                      <select class="form-control" id="oktaEventType">
+                        <option value="">All Events</option>
+                        <option value="user.lifecycle">User Lifecycle</option>
+                        <option value="user.session">User Session</option>
+                        <option value="user.authentication">Authentication</option>
+                        <option value="application">Application</option>
+                        <option value="policy">Policy</option>
+                        <option value="group">Group</option>
+                      </select>
+                    </div>
+                    <label for="oktaDateRange" class="col-sm-2 col-form-label">Date Range:</label>
+                    <div class="col-sm-4">
+                      <select class="form-control" id="oktaDateRange">
+                        <option value="today">Today</option>
+                        <option value="yesterday">Yesterday</option>
+                        <option value="7days" selected>Last 7 Days</option>
+                        <option value="30days">Last 30 Days</option>
+                        <option value="custom">Custom Range</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle mr-2"></i> Select filter criteria and click "Search" to view Okta audit logs.
+                  </div>
+                  
+                  <div class="text-center mt-3">
+                    <button class="btn btn-primary">
+                      <i class="fas fa-search mr-1"></i> Search Logs
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Active Directory Audits -->
+            <div class="tab-pane fade" id="ad" role="tabpanel" aria-labelledby="ad-tab">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0">Active Directory Audit Logs</h6>
+                  <div>
+                    <button class="btn btn-outline-primary btn-sm mr-2">
+                      <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <button class="btn btn-outline-success btn-sm">
+                      <i class="fas fa-download"></i> Export
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="form-group row">
+                    <label for="adEventType" class="col-sm-2 col-form-label">Event Type:</label>
+                    <div class="col-sm-4">
+                      <select class="form-control" id="adEventType">
+                        <option value="">All Events</option>
+                        <option value="account">Account Management</option>
+                        <option value="logon">Logon Events</option>
+                        <option value="object">Object Access</option>
+                        <option value="policy">Policy Change</option>
+                        <option value="privilege">Privilege Use</option>
+                        <option value="system">System Events</option>
+                      </select>
+                    </div>
+                    <label for="adDateRange" class="col-sm-2 col-form-label">Date Range:</label>
+                    <div class="col-sm-4">
+                      <select class="form-control" id="adDateRange">
+                        <option value="today">Today</option>
+                        <option value="yesterday">Yesterday</option>
+                        <option value="7days" selected>Last 7 Days</option>
+                        <option value="30days">Last 30 Days</option>
+                        <option value="custom">Custom Range</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle mr-2"></i> Select filter criteria and click "Search" to view Active Directory audit logs.
+                  </div>
+                  
+                  <div class="text-center mt-3">
+                    <button class="btn btn-primary">
+                      <i class="fas fa-search mr-1"></i> Search Logs
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Entra ID Audits -->
+            <div class="tab-pane fade" id="entra" role="tabpanel" aria-labelledby="entra-tab">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0">Microsoft Entra ID Audit Logs</h6>
+                  <div>
+                    <button class="btn btn-outline-primary btn-sm mr-2">
+                      <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <button class="btn btn-outline-success btn-sm">
+                      <i class="fas fa-download"></i> Export
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="form-group row">
+                    <label for="entraCategory" class="col-sm-2 col-form-label">Category:</label>
+                    <div class="col-sm-4">
+                      <select class="form-control" id="entraCategory">
+                        <option value="">All Categories</option>
+                        <option value="userManagement">User Management</option>
+                        <option value="groupManagement">Group Management</option>
+                        <option value="applicationManagement">Application Management</option>
+                        <option value="roleManagement">Role Management</option>
+                        <option value="deviceManagement">Device Management</option>
+                        <option value="b2c">B2C</option>
+                      </select>
+                    </div>
+                    <label for="entraDateRange" class="col-sm-2 col-form-label">Date Range:</label>
+                    <div class="col-sm-4">
+                      <select class="form-control" id="entraDateRange">
+                        <option value="today">Today</option>
+                        <option value="yesterday">Yesterday</option>
+                        <option value="7days" selected>Last 7 Days</option>
+                        <option value="30days">Last 30 Days</option>
+                        <option value="custom">Custom Range</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle mr-2"></i> Select filter criteria and click "Search" to view Microsoft Entra ID audit logs.
+                  </div>
+                  
+                  <div class="text-center mt-3">
+                    <button class="btn btn-primary">
+                      <i class="fas fa-search mr-1"></i> Search Logs
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Custom Reports Tab -->
+    <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Custom Reports</h5>
+        </div>
+        <div class="card-body">
+          <p>Create and run custom reports based on your specific requirements.</p>
+          
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Saved Reports</h5>
+                  <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      Monthly User Activity
+                      <div>
+                        <button class="btn btn-sm btn-outline-primary mr-1"><i class="fas fa-play"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                      </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      Failed Login Attempts
+                      <div>
+                        <button class="btn btn-sm btn-outline-primary mr-1"><i class="fas fa-play"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                      </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      Application Usage Trends
+                      <div>
+                        <button class="btn btn-sm btn-outline-primary mr-1"><i class="fas fa-play"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Create New Report</h5>
+                  <form>
+                    <div class="form-group">
+                      <label for="reportName">Report Name</label>
+                      <input type="text" class="form-control" id="reportName" placeholder="Enter report name">
+                    </div>
+                    <div class="form-group">
+                      <label for="reportType">Report Type</label>
+                      <select class="form-control" id="reportType">
+                        <option>User Activity</option>
+                        <option>Application Access</option>
+                        <option>Security Events</option>
+                        <option>Admin Actions</option>
+                        <option>Custom Query</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="reportFormat">Output Format</label>
+                      <select class="form-control" id="reportFormat">
+                        <option>HTML</option>
+                        <option>CSV</option>
+                        <option>Excel</option>
+                        <option>PDF</option>
+                        <option>JSON</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="scheduleReport">Schedule</label>
+                      <select class="form-control" id="scheduleReport">
+                        <option>Run Once</option>
+                        <option>Daily</option>
+                        <option>Weekly</option>
+                        <option>Monthly</option>
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

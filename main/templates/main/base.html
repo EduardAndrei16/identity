@@ -20,7 +20,7 @@
   {% block extra_head %}{% endblock %}
 </head>
 
-<body class ="d-flex flex-column h-100">
+<body class ="d-flex flex-column min-vh-100">
   <header class="site-header">
       <nav class="navbar navbar-expand-md navbar-dark fixed-top">
         <div class="container-fluid">
@@ -31,11 +31,14 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{% url 'app_onboarding' %}"><i class="fas fa-clipboard-list mr-1"></i> Application Onboarding</a> 
-              <a class="nav-item nav-link" href="#"><i class="fas fa-sync-alt mr-1"></i> Application Update</a>
-            </div>            <!-- Navbar Right Side -->
-            <div class="navbar-nav">
+              <a class="nav-item nav-link" href="{% url 'app_update' %}"><i class="fas fa-sync-alt mr-1"></i> Application Update</a>
+              <!-- Auth Clients nav item -->
+              <a class="nav-item nav-link" href="{% url 'auth_clients' %}"><i class="fas fa-key mr-1"></i> Auth Clients</a>
+              <!-- New Audits/Reports nav item -->
+              <a class="nav-item nav-link" href="{% url 'audits_reports' %}"><i class="fas fa-chart-bar mr-1"></i> Audits&Reports</a>
+            </div>            <!-- Navbar Right Side -->            <div class="navbar-nav">
               {% if user.is_authenticated %}
-                <span class="nav-item nav-link"><i class="fas fa-user mr-1"></i> {{ user.username }}</span>
+                <span class="nav-item nav-link"><i class="fas fa-user mr-1"></i> {{ user.first_name }}</span>
                 <a class="nav-item nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
               {% else %}
                 <a class="nav-item nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt mr-1"></i> Login</a>
@@ -50,11 +53,13 @@
       {% block content %}{% endblock %}
   </div>
 
-  <footer class="text-center">
+<div class="footer-container d-flex flex-column" style="margin-top: auto; min-height: 100px;">
+  <footer class="text-center ">
       <div class="container">
           <p class="mt-auto py-3 ">&copy; {% now "Y" %} Identity Services. All rights reserved.</p>
       </div>
   </footer>
+</div>
 
   <!-- Bootstrap 4 JS -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
