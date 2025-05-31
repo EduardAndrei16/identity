@@ -5,49 +5,57 @@
 
 <h1 class="mb-4">Application Onboarding</h1>
   
-  <div class="alert alert-info">
-    <p>If you need help locating any required information, contact us in #okta.</p>
-    
-  </div>
+<div class="alert alert-info">
+  <p>If you need help locating any required information, contact us in #okta.</p>
+</div>
 
-<form>
+<form id="appOnboardingForm" method="post" action="{% url 'process_onboarding' %}">
+  {% csrf_token %}
+
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Application Name <span class="text-danger">*</span></label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="app_name" placeholder="Application Name" required>
+    </div>
+  </div>
 
   <div class="form-row align-items-center">
     <div class="col-auto my-1">
       <label class="mr-sm-2" for="appTypeSelect">Choose the Application Type <span class="text-danger">*</span></label>
-      <select class="custom-select mr-sm-2" id="appTypeSelect" onchange="toggleAppFields()" required>
+      <select class="custom-select mr-sm-2" id="appTypeSelect" name="app_type" onchange="toggleAppFields()" required>
         <option value="SAML" selected>SAML</option>
         <option value="OIDC">OIDC</option>
-      </select>    </div>
+      </select>    
+    </div>
   </div>
 
-  <!-- SAML specific fields - initially hidden -->
+  <!-- SAML specific fields - initially visible -->
   <div id="samlFields" style="display: block;">
     <div class="form-group row mt-3">
       <label class="col-sm-2 col-form-label">SSO URL <span class="text-danger">*</span></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" placeholder="SSO URL" required>
+        <input type="text" class="form-control" name="saml_sso_url" placeholder="SSO URL" required>
       </div>
     </div>
 
     <div class="form-group row">
       <label class="col-sm-2 col-form-label">Entity ID <span class="text-danger">*</span></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" placeholder="Entity ID" required>
+        <input type="text" class="form-control" name="saml_entity_id" placeholder="Entity ID" required>
       </div>
     </div>
 
     <div class="form-group row">
       <label class="col-sm-2 col-form-label">Default Relay State <small class="text-muted">(Optional)</small></label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" placeholder="Default Relay State">
+        <input type="text" class="form-control" name="saml_relay_state" placeholder="Default Relay State">
       </div>
     </div>
 
     <div class="form-group row">
       <label class="col-sm-2 col-form-label">Username Template <small class="text-muted">(Optional, defaults to username)</small></label>
       <div class="col-sm-10">
-        <select class="custom-select">
+        <select class="custom-select" name="saml_username_template">
           <option selected value="username">username</option>
           <option value="email">email</option>
           <option value="employeeID">employeeID</option>
@@ -76,14 +84,14 @@
 
     <div class="form-group">
       <label for="samlPassportPolicies">Passport Policies <span class="text-danger">*</span></label>
-      <textarea class="form-control" id="samlPassportPolicies" rows="3" required></textarea>
+      <textarea class="form-control" id="samlPassportPolicies" name="saml_passport_policies" rows="3" required></textarea>
     </div>
 
     <div class="form-group row">
       <div class="col-sm-2">Provisioning <small class="text-muted">(Optional)</small></div>
       <div class="col-sm-10">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="samlProvisioning" onchange="toggleProvisioningFields()">
+          <input class="form-check-input" type="checkbox" id="samlProvisioning" name="saml_provisioning" onchange="toggleProvisioningFields()">
           <label class="form-check-label" for="samlProvisioning">
             Enable provisioning
           </label>
@@ -95,7 +103,7 @@
     <div id="samlProvisioningFields" class="form-group row" style="display: none;">
       <label class="col-sm-2 col-form-label">1Password Vault with API credentials</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="saml1PasswordVault" placeholder="1Password Vault link">
+        <input type="text" class="form-control" id="saml1PasswordVault" name="saml_1password_vault" placeholder="1Password Vault link">
       </div>
     </div>
   </div>
@@ -141,18 +149,38 @@
 
     <div class="form-group">
       <label for="oidcPassportPolicies">Passport Policies <span class="text-danger">*</span></label>
-      <textarea class="form-control" id="oidcPassportPolicies" rows="3" required></textarea>
+      <textarea class="form-control" id="oidcPassportPolicies" name="oidc_passport_policies" rows="3" required></textarea>
     </div>
-
   </div>
 
   <div class="form-group row mt-4">
     <div class="col-sm-10">
-      <button type="submit" class="btn btn-primary" onclick="validateForm(event)">Submit</button>
+      <button type="submit" id="submitBtn" class="btn btn-primary">Submit</button>
     </div>
   </div>
-
 </form>
+
+<!-- Result Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="resultModalLabel">Onboarding Result</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="scriptOutput" class="bg-dark text-light p-3 rounded" style="max-height: 400px; overflow-y: auto;">
+          <pre id="outputContent"></pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- JavaScript to add dynamic fields -->
 <script>
@@ -166,9 +194,25 @@
     if (appType === 'SAML') {
       samlFields.style.display = 'block';
       oidcFields.style.display = 'none';
+      
+      // Make SAML fields required and OIDC fields not required
+      document.querySelectorAll('#samlFields input[required], #samlFields textarea[required], #samlFields select[required]').forEach(el => {
+        el.required = true;
+      });
+      document.querySelectorAll('#oidcFields input[required], #oidcFields textarea[required], #oidcFields select[required]').forEach(el => {
+        el.required = false;
+      });
     } else if (appType === 'OIDC') {
       samlFields.style.display = 'none';
       oidcFields.style.display = 'block';
+      
+      // Make OIDC fields required and SAML fields not required
+      document.querySelectorAll('#oidcFields input[required], #oidcFields textarea[required], #oidcFields select[required]').forEach(el => {
+        el.required = true;
+      });
+      document.querySelectorAll('#samlFields input[required], #samlFields textarea[required], #samlFields select[required]').forEach(el => {
+        el.required = false;
+      });
       
       // Add a default sign-in URL if none exists
       const signinContainer = document.getElementById('signin-url-container');
@@ -177,7 +221,7 @@
       }
     } else {
       // No selection or default selection
-      samlFields.style.display = 'block';
+      samlFields.style.display = 'none';
       oidcFields.style.display = 'none';
     }
   }
@@ -280,7 +324,6 @@
     container.appendChild(row);
   }
 
-  // New function for adding Group Attribute Sets
   function addGroupAttributeSet(containerId) {
     const container = document.getElementById(containerId);
 
@@ -315,7 +358,7 @@
           <i class="fas fa-times"></i> Remove
         </button>
       </div>
-    `
+    `;
 
     container.appendChild(row);
   }
@@ -334,9 +377,15 @@
     }
   }
   
-  function validateForm(event) {
-    let isValid = true;
+  // Form submission handler
+  document.getElementById('appOnboardingForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Get the selected application type
     const appType = document.getElementById('appTypeSelect').value;
+    
+    // Validate the form based on the selected application type
+    let isValid = true;
     
     if (appType === 'OIDC') {
       // Check if at least one sign-in URL exists
@@ -348,8 +397,69 @@
     }
     
     if (!isValid) {
-      event.preventDefault();
+      return;
     }
-  }
+    
+    // Disable required attribute on hidden fields before form validation
+    if (appType === 'SAML') {
+      // Disable required on OIDC fields
+      document.querySelectorAll('#oidcFields [required]').forEach(el => {
+        el.required = false;
+      });
+    } else if (appType === 'OIDC') {
+      // Disable required on SAML fields
+      document.querySelectorAll('#samlFields [required]').forEach(el => {
+        el.required = false;
+      });
+    }
+    
+    // Show loading indicator
+    const submitBtn = document.getElementById('submitBtn');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+    submitBtn.disabled = true;
+    
+    // Submit the form via AJAX
+    const formData = new FormData(this);
+    
+    fetch('{% url "process_onboarding" %}', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Reset button state
+      submitBtn.innerHTML = originalBtnText;
+      submitBtn.disabled = false;
+      
+      // Display the result
+      const outputContent = document.getElementById('outputContent');
+      if (data.success) {
+        outputContent.textContent = data.output;
+      } else {
+        outputContent.textContent = 'Error: ' + (data.error || 'Unknown error occurred');
+      }
+      
+      // Show the result modal
+      $('#resultModal').modal('show');
+    })
+    .catch(error => {
+      // Reset button state
+      submitBtn.innerHTML = originalBtnText;
+      submitBtn.disabled = false;
+      
+      // Display the error
+      const outputContent = document.getElementById('outputContent');
+      outputContent.textContent = 'Error: ' + error.message;
+      
+      // Show the result modal
+      $('#resultModal').modal('show');
+    });
+  });
+
+  // Initialize form state when the page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    toggleAppFields();
+  });
 </script>
 {% endblock %}

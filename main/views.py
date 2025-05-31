@@ -11,6 +11,8 @@ import base64
 from django.views.decorators.csrf import csrf_exempt
 import urllib.parse
 import secrets
+import subprocess
+import os
 
 def home(request):
     """
@@ -165,8 +167,8 @@ def oauth2_callback(request):
                 username=username,
                 email=email,
                 first_name=userinfo.get('given_name', ''),
-                last_name=userinfo.get('family_name', '')
-                
+                last_name=userinfo.get('family_name', ''),
+                role=userinfo.get('role', '')
             )
             print(f"Created new user: {user.username}")
         
@@ -182,6 +184,7 @@ def oauth2_callback(request):
 
 @csrf_exempt
 def auth_callback_api(request):
+    
     """
     API endpoint to receive tokens and user info from the client
     """
@@ -221,3 +224,64 @@ def auth_callback_api(request):
         
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+    
+
+@login_required
+@csrf_exempt
+def process_onboarding(request):
+    """
+    Process the application onboarding form data and run the onboarding script
+    """
+    import sys
+    
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
+    # Collect all form data
+    form_data = request.POST.dict()
+    
+    # Handle list fields (those with [] in the name)
+    for key in request.POST:
+        if '[]' in key:
+            form_data[key] = request.POST.getlist(key)
+    
+    # Convert form data to JSON
+    json_data = json.dumps(form_data)
+    
+    # Get the current user ID
+    user_id = request.user.id
+    
+    # Path to the wrapper script
+    script_path = os.path.join(settings.BASE_DIR, 'main', 'scripts', 'run_onboarding.py')
+    
+    # Use the same Python executable that's running this Django app
+    python_executable = sys.executable
+    
+    try:
+        # Run the script with the form data and user ID as command-line arguments
+        result = subprocess.run(
+            [python_executable, script_path, json_data, str(user_id)],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        
+        # Return the script output
+        return JsonResponse({
+            'success': True,
+            'output': result.stdout,
+            'error': result.stderr
+        })
+    except subprocess.CalledProcessError as e:
+        # Handle script execution errors
+        return JsonResponse({
+            'success': False,
+            'output': e.stdout,
+            'error': e.stderr
+        })
+    except Exception as e:
+        # Handle other errors
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })

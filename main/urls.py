@@ -7,6 +7,8 @@ urlpatterns = [
     path('auth_clients/', views.auth_clients, name='auth_clients'),
     path('audits_reports/', views.audits_reports, name='audits_reports'),
     path('app_update/', views.app_update, name='app_update'),
+    path('process_onboarding/', views.process_onboarding, name='process_onboarding'),
+    
     
     # Authentication URLs
     path('accounts/login/', views.login_view, name='login'),
