@@ -165,8 +165,8 @@ def oauth2_callback(request):
                 username=username,
                 email=email,
                 first_name=userinfo.get('given_name', ''),
-                last_name=userinfo.get('family_name', ''),
-                role=userinfo.get('role', '')
+                last_name=userinfo.get('family_name', '')
+                
             )
             print(f"Created new user: {user.username}")
         
